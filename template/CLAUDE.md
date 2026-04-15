@@ -1,4 +1,4 @@
-# Claude Code Instructions — {{PROJECT_NAME}}
+# Claude Code Instructions — OpenSpec Project
 
 ## OpenSpec Status Check (run this first on every session start)
 
@@ -102,9 +102,8 @@ Spec files are created at `.openspec/specs/<slug>.spec.yaml`.
 
 ## Project Context
 
-- **Project**: {{PROJECT_NAME}}
-- **Owner**: {{GITHUB_OWNER}}
-- **Config**: `.openspec/config.yaml`
+- **Config**: `.openspec/config.yaml` ← fill this in during onboarding
 - **Spec templates**: `.openspec/templates/`
 - **Active specs**: `.openspec/specs/`
+- **Onboarding questions**: `.openspec/onboarding.yaml`
 - **OpenSpec version**: 1

@@ -15,13 +15,36 @@ agent instructions.
 
 ### Option A — GitHub UI (no CLI needed)
 
-1. Go to this repo on GitHub and click **"Use this template" → "Create a new repository"**
+> **Important:** For GitHub UI use, mark the **`openspec-template`** repo as the
+> template — not this one. This repo contains the extension source code.
+> `openspec-template` contains only the clean project files (the contents of
+> `template/` here) and is what developers should click "Use this template" on.
+
+1. Go to `arananet/openspec-template` on GitHub and click **"Use this template" → "Create a new repository"**
 2. Fill in your repo name and click Create
-3. GitHub copies all files into your new repo — including `CLAUDE.md`, `.openspec/`, and the CI workflows
-4. On the first push, `spec-bootstrap.yml` fires and creates a **"Complete OpenSpec configuration"** issue in your repo
-5. Open the project in Claude Code or a Codespace — setup runs automatically
+3. GitHub copies all files into your new repo — `.openspec/`, `CLAUDE.md`, CI workflows, hooks — all with blank config and OpenSpec instructions ready to follow
+4. On the first push, `spec-bootstrap.yml` fires and creates a **"Complete OpenSpec configuration"** issue in your repo linking to `CLAUDE.md`
+5. Open the project in Claude Code or a Codespace — onboarding runs automatically
 
 > **Codespaces**: `.devcontainer/devcontainer.json` runs `bash setup.sh` on container creation, so git hooks are installed before you write a single line of code.
+
+**What the new repo contains — no past config, only instructions:**
+
+```
+.openspec/
+  config.yaml       ← blank fields waiting to be filled (triggers AI wizard)
+  onboarding.yaml   ← the questions Claude Code will ask you
+  specs/            ← empty, ready for your first spec
+  templates/        ← feature and bugfix spec templates
+CLAUDE.md           ← AI wizard: interviews you, writes config, scaffolds first spec
+.github/
+  AGENTS.md         ← instructions for all AI agents
+  copilot-instructions.md
+  workflows/
+    spec-check.yml      ← blocks PRs with no spec changes
+    spec-bootstrap.yml  ← creates setup issue on first push
+hooks/ + setup.sh   ← git hooks (installed via devcontainer or bash setup.sh)
+```
 
 ### Option B — CLI
 
