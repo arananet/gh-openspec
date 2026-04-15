@@ -247,3 +247,11 @@ This repo uses OpenSpec on itself. Every subcommand has a spec in
 ## License
 
 MIT © Arananet
+
+---
+
+## Author
+
+Built by **Eduardo Arana** — this project is developed using OpenSpec,
+meaning every feature in this extension was written spec-first: acceptance
+criteria defined before a single line of implementation code.
