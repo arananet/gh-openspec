@@ -1,0 +1,28 @@
+# Bugfix Spec — created by gh openspec scaffold --type bugfix
+
+title: "{{FEATURE_NAME}}"
+slug: "{{SLUG}}"
+type: bugfix
+status: {{STATUS}}   # draft | review | approved
+
+author: "{{AUTHOR}}"
+created_at: "{{DATE}}"
+updated_at: "{{DATE}}"
+
+description: |
+  <!-- What IS happening vs what SHOULD happen. -->
+
+root_cause: |
+  <!-- What caused the bug. -->
+
+reproduction_steps:
+  - "<!-- Step 1 -->"
+
+acceptance_criteria:
+  - "<!-- The bug is fixed when: ... -->"
+
+regression_test: |
+  <!-- Describe a test that would catch this bug in the future. -->
+
+linked_issues: []
+linked_prs: []

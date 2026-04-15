@@ -1,0 +1,41 @@
+name: OpenSpec Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.openspec/config.yaml'
+
+jobs:
+  bootstrap-check:
+    name: Check OpenSpec Setup
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for placeholder tokens
+        id: check
+        run: |
+          if grep -q '{{' .openspec/config.yaml; then
+            echo "needs_setup=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_setup=false" >> "$GITHUB_OUTPUT"
+            echo "✓ OpenSpec config is fully configured."
+          fi
+
+      - name: Create setup issue
+        if: steps.check.outputs.needs_setup == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create setup --color "0075ca" --description "Project setup required" 2>/dev/null || true
+          gh issue create \
+            --title "Complete OpenSpec configuration" \
+            --label "setup" \
+            --body "## OpenSpec Setup Required
+
+          \`.openspec/config.yaml\` has placeholder values. Open in Claude Code for guided setup, or edit manually."

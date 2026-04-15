@@ -1,0 +1,32 @@
+title: "gh openspec init — Add OpenSpec to Existing Repo"
+slug: "init-command"
+type: feature
+status: approved
+
+author: "arananet"
+created_at: "2026-04-15"
+updated_at: "2026-04-15"
+
+description: |
+  The `init` subcommand adds OpenSpec enforcement to an existing git repository.
+  It copies the template directory into the current working directory, detects
+  the project name and owner from the git remote, applies substitutions, and
+  optionally installs git hooks by running setup.sh automatically.
+
+acceptance_criteria:
+  - "Given an existing git repo with no .openspec/, when `gh openspec init` runs, then all template files are copied into the current directory."
+  - "Given a git remote is configured, then {{PROJECT_NAME}} is inferred from the remote URL's repo segment."
+  - "Given setup.sh runs, then pre-commit and commit-msg hooks are installed in .git/hooks/."
+  - "Given .openspec/ already exists without --force, then the command exits with an error and makes no changes."
+  - "Given --force is passed with existing .openspec/, then the directory is overwritten."
+  - "Given --skip-hooks is passed, then setup.sh is not run."
+  - "Given the command completes, then instructions are printed pointing to CLAUDE.md and config.yaml."
+
+out_of_scope:
+  - "Merging into existing .openspec/ configuration (--force overwrites)"
+
+technical_notes: |
+  Owner is extracted from the git remote URL handling both HTTPS and SSH formats.
+
+linked_issues: []
+linked_prs: []

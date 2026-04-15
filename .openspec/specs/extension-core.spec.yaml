@@ -1,0 +1,33 @@
+title: "gh-openspec Extension Core"
+slug: "extension-core"
+type: feature
+status: approved
+
+author: "arananet"
+created_at: "2026-04-15"
+updated_at: "2026-04-15"
+
+description: |
+  The core dispatch layer of the gh-openspec extension. Comprises the main
+  `gh-openspec` executable entry point and the `lib/utils.sh` shared utility
+  library. Responsible for subcommand routing, colored output, prerequisite
+  checks (gh auth, git repo), GitHub API helpers, and template substitution.
+
+acceptance_criteria:
+  - "Given the extension is installed, when running `gh openspec --help`, then a usage block listing all four subcommands is printed."
+  - "Given an unknown subcommand is passed, when invoked, then an error is printed and exit code is 1."
+  - "Given gh auth is not active, when any subcommand requiring auth runs, then `require_gh_auth` exits with a clear message."
+  - "Given a file with {{PLACEHOLDER}} tokens, when `template_substitute` is called, then all matching tokens are replaced without corrupting surrounding content."
+  - "Given NO_COLOR is set, when any output function is called, then output contains no ANSI escape codes."
+
+out_of_scope:
+  - "Subcommand implementations (covered by individual specs)"
+  - "Template file contents"
+
+technical_notes: |
+  The extension entry point resolves its own SCRIPT_DIR at runtime so it works
+  whether invoked directly or via `gh extension install`. All subcommand files
+  are sourced (not exec'd) to share utils.sh state.
+
+linked_issues: []
+linked_prs: []

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# OpenSpec pre-commit hook
+set -euo pipefail
+
+CONFIG=".openspec/config.yaml"
+[ -f "$CONFIG" ] || exit 0
+
+ENFORCE=$(grep 'block_if_no_spec:' "$CONFIG" 2>/dev/null | awk '{print $2}' | tr -d '"' | head -1)
+[ "$ENFORCE" = "true" ] || exit 0
+
+STAGED=$(git diff --cached --name-only 2>/dev/null || true)
+[ -n "$STAGED" ] || exit 0
+
+# For this repo, source files are .sh files (not template/)
+SOURCE=$(echo "$STAGED" | grep -E '\.(sh)$' | grep -v '^template/' || true)
+[ -n "$SOURCE" ] || exit 0
+
+SPEC=$(echo "$STAGED" | grep -E '\.openspec/specs/.*\.spec\.yaml$' || true)
+
+if [ -z "$SPEC" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════════╗"
+  echo "║  OpenSpec: Commit blocked — no spec changes included         ║"
+  echo "╚══════════════════════════════════════════════════════════════╝"
+  echo ""
+  echo "  Staged source files:"
+  echo "$SOURCE" | sed 's/^/    /'
+  echo ""
+  echo "  Create a spec: gh openspec scaffold '<feature-name>'"
+  echo "  Bypass:        git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0

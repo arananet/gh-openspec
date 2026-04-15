@@ -1,0 +1,40 @@
+# OpenSpec Configuration — gh-openspec extension repo
+# This repo uses OpenSpec on itself (self-governance).
+
+project:
+  name: "gh-openspec"
+  owner: "arananet"
+  team: "platform"
+  domain: "developer-tooling"
+  description: "A gh CLI extension for spec-driven development enforcement from day 0"
+
+spec:
+  required_fields:
+    - title
+    - description
+    - acceptance_criteria
+    - status
+  enforce_on_pr: true
+  enforce_on_commit: true
+  min_acceptance_criteria: 1
+  statuses:
+    - draft
+    - review
+    - approved
+  approved_required_for_merge: false
+
+ci:
+  fail_on_missing_spec: true
+  fail_on_draft_spec: false
+  notify_slack: false
+  slack_webhook: ""
+
+hooks:
+  pre_commit:
+    enabled: true
+    block_if_no_spec: true
+    warn_only: false
+  commit_msg:
+    enabled: true
+    require_spec_reference: false
+    pattern: "spec: <slug>"

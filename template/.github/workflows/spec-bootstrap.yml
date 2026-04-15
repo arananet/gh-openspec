@@ -1,0 +1,72 @@
+name: OpenSpec Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.openspec/config.yaml'
+
+jobs:
+  bootstrap-check:
+    name: Check OpenSpec Setup
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for placeholder tokens
+        id: check
+        run: |
+          if grep -q '{{' .openspec/config.yaml; then
+            echo "needs_setup=true" >> "$GITHUB_OUTPUT"
+            echo "Project config has placeholder values — will create setup issue."
+          else
+            echo "needs_setup=false" >> "$GITHUB_OUTPUT"
+            echo "✓ OpenSpec config is fully configured."
+          fi
+
+      - name: Create setup issue
+        if: steps.check.outputs.needs_setup == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create the 'setup' label if it doesn't exist
+          gh label create setup --color "0075ca" --description "Project setup required" 2>/dev/null || true
+
+          gh issue create \
+            --title "Complete OpenSpec configuration" \
+            --label "setup" \
+            --body "## OpenSpec Setup Required
+
+          This repository was created with OpenSpec enforcement, but \`.openspec/config.yaml\`
+          still has placeholder values that need to be filled in.
+
+          ### Recommended: Open in Claude Code (AI-guided setup)
+
+          1. Clone this repo and open it in [Claude Code](https://claude.ai/code)
+          2. Claude Code will read \`CLAUDE.md\` and automatically detect the unconfigured state
+          3. It will ask you the setup questions and write the answers into \`config.yaml\`
+          4. You'll be up and running in minutes
+
+          ### Manual Setup
+
+          1. Edit \`.openspec/config.yaml\` — replace all \`{{PLACEHOLDER}}\` values
+          2. Run \`bash setup.sh\` to install git hooks
+          3. Run \`gh openspec scaffold 'your first feature'\` to create your first spec
+          4. Run \`gh openspec check\` to validate
+
+          ### Key Files
+
+          | File | Purpose |
+          |------|---------|
+          | \`.openspec/config.yaml\` | Project configuration |
+          | \`.openspec/onboarding.yaml\` | Questions Claude Code will ask |
+          | \`CLAUDE.md\` | AI agent instructions |
+          | \`.github/AGENTS.md\` | Instructions for all AI agents |
+
+          ---
+          *This issue was created automatically by the OpenSpec bootstrap workflow.*
+          *It will close when \`config.yaml\` has no remaining \`{{PLACEHOLDER}}\` tokens.*"

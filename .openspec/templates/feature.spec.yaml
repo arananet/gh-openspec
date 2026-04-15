@@ -1,0 +1,26 @@
+# Feature Spec — created by gh openspec scaffold
+# Fill in all sections before moving status to 'review'.
+
+title: "{{FEATURE_NAME}}"
+slug: "{{SLUG}}"
+type: feature
+status: {{STATUS}}   # draft | review | approved
+
+author: "{{AUTHOR}}"
+created_at: "{{DATE}}"
+updated_at: "{{DATE}}"
+
+description: |
+  <!-- One paragraph describing WHAT this feature does and WHY it exists. -->
+
+acceptance_criteria:
+  - "<!-- Given <context>, when <action>, then <outcome> -->"
+
+out_of_scope:
+  - "<!-- Explicitly list things NOT included. -->"
+
+technical_notes: |
+  <!-- Optional: constraints, dependencies, architecture decisions. -->
+
+linked_issues: []
+linked_prs: []

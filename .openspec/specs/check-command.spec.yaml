@@ -1,0 +1,36 @@
+title: "gh openspec check — Spec Coverage Validation"
+slug: "check-command"
+type: feature
+status: approved
+
+author: "arananet"
+created_at: "2026-04-15"
+updated_at: "2026-04-15"
+
+description: |
+  The `check` subcommand validates spec coverage and quality in the current
+  repository. It checks that OpenSpec is initialized, that config.yaml has no
+  placeholder tokens, that all spec files contain the required fields, and
+  optionally checks PR or commit coverage. Exit code 0 means all checks pass;
+  exit code 1 means at least one check failed.
+
+acceptance_criteria:
+  - "Given OpenSpec is not initialized, when check runs, then it exits 1 with a message suggesting `gh openspec init`."
+  - "Given config.yaml has {{PLACEHOLDER}} tokens, then a warning is printed (or error with --strict)."
+  - "Given all spec files are valid, when check runs, then exit code is 0."
+  - "Given a spec file is missing a required field (title, description, acceptance_criteria, status), then it is reported as a failure."
+  - "Given a spec file has an invalid status value, then it is reported as a failure."
+  - "Given --pr <number>, then the PR's changed files are fetched and source changes without spec changes are reported as failure."
+  - "Given --strict, then warnings are treated as failures (exit code 1)."
+  - "Given no spec files exist, then a warning is printed (not a hard failure by default)."
+
+out_of_scope:
+  - "Semantic validation of acceptance_criteria content"
+  - "Cross-referencing specs with actual code files"
+
+technical_notes: |
+  PR coverage check uses `gh pr diff <number> --name-only` rather than the
+  GitHub API directly, so it requires the gh CLI to be authenticated.
+
+linked_issues: []
+linked_prs: []
