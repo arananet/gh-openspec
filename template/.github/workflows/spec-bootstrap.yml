@@ -3,8 +3,9 @@ name: OpenSpec Bootstrap
 on:
   push:
     branches: [main]
-    paths:
-      - '.openspec/config.yaml'
+  # Also fires when a repo is created from this template and any
+  # branch is created — covers the GitHub UI "Use this template" flow.
+  create:
 
 jobs:
   bootstrap-check:
@@ -28,12 +29,18 @@ jobs:
             echo "✓ OpenSpec config is fully configured."
           fi
 
-      - name: Create setup issue
+      - name: Create setup issue (if not already open)
         if: steps.check.outputs.needs_setup == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Create the 'setup' label if it doesn't exist
+          # Skip if a setup issue already exists (idempotent across pushes)
+          EXISTING=$(gh issue list --label "setup" --state open --json number --jq 'length')
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "Setup issue already open — skipping creation."
+            exit 0
+          fi
+
           gh label create setup --color "0075ca" --description "Project setup required" 2>/dev/null || true
 
           gh issue create \
@@ -51,6 +58,12 @@ jobs:
           3. It will ask you the setup questions and write the answers into \`config.yaml\`
           4. You'll be up and running in minutes
 
+          ### Works from the GitHub UI too
+
+          If you created this repo using **Use this template** on GitHub:
+          - Open a Codespace — \`setup.sh\` runs automatically via \`.devcontainer\`
+          - Or clone locally and open in Claude Code
+
           ### Manual Setup
 
           1. Edit \`.openspec/config.yaml\` — replace all \`{{PLACEHOLDER}}\` values
@@ -58,15 +71,23 @@ jobs:
           3. Run \`gh openspec scaffold 'your first feature'\` to create your first spec
           4. Run \`gh openspec check\` to validate
 
-          ### Key Files
-
           | File | Purpose |
           |------|---------|
           | \`.openspec/config.yaml\` | Project configuration |
           | \`.openspec/onboarding.yaml\` | Questions Claude Code will ask |
           | \`CLAUDE.md\` | AI agent instructions |
-          | \`.github/AGENTS.md\` | Instructions for all AI agents |
+          | \`.devcontainer/devcontainer.json\` | Auto-runs \`setup.sh\` in Codespaces |
 
           ---
-          *This issue was created automatically by the OpenSpec bootstrap workflow.*
-          *It will close when \`config.yaml\` has no remaining \`{{PLACEHOLDER}}\` tokens.*"
+          *This issue closes automatically once \`config.yaml\` has no \`{{PLACEHOLDER}}\` tokens.*"
+
+      - name: Close setup issue when config is complete
+        if: steps.check.outputs.needs_setup == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE=$(gh issue list --label "setup" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$ISSUE" ]; then
+            gh issue close "$ISSUE" --comment "OpenSpec configuration is complete — \`.openspec/config.yaml\` has no placeholder tokens. Closing."
+            echo "Closed setup issue #$ISSUE"
+          fi

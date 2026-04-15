@@ -11,15 +11,29 @@ agent instructions.
 
 ---
 
-## Installation
+## Two ways to use it
+
+### Option A — GitHub UI (no CLI needed)
+
+1. Go to this repo on GitHub and click **"Use this template" → "Create a new repository"**
+2. Fill in your repo name and click Create
+3. GitHub copies all files into your new repo — including `CLAUDE.md`, `.openspec/`, and the CI workflows
+4. On the first push, `spec-bootstrap.yml` fires and creates a **"Complete OpenSpec configuration"** issue in your repo
+5. Open the project in Claude Code or a Codespace — setup runs automatically
+
+> **Codespaces**: `.devcontainer/devcontainer.json` runs `bash setup.sh` on container creation, so git hooks are installed before you write a single line of code.
+
+### Option B — CLI
 
 ```bash
 gh extension install arananet/openspec_github_extension
+gh openspec create my-project
+cd my-project && bash setup.sh
 ```
 
 ---
 
-## Quick Start
+## Quick Start (CLI)
 
 ```bash
 # Create a new repo with OpenSpec baked in
@@ -34,7 +48,7 @@ bash setup.sh
 code .
 ```
 
-That's it. Claude Code reads `CLAUDE.md`, detects the placeholder config,
+Claude Code reads `CLAUDE.md`, detects the placeholder config,
 and walks you through setup questions before letting you write any code.
 
 ---
