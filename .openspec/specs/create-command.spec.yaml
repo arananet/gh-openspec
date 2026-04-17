@@ -5,32 +5,32 @@ status: approved
 
 author: "arananet"
 created_at: "2026-04-15"
-updated_at: "2026-04-15"
+updated_at: "2026-04-17"
 
 description: |
-  The `create` subcommand creates a new GitHub repository and immediately
-  stamps it with the full OpenSpec template directory. It handles repo creation
-  via the `gh` CLI, copies the template (including dotfiles), applies project
-  substitutions, commits the bootstrap, and pushes to origin — leaving the
-  developer with a fully-wired repo ready for the AI onboarding wizard.
+  The `create` subcommand creates a new GitHub repository using the
+  `arananet/openspec-template` GitHub template repo, then applies project-specific
+  substitutions and pushes the configuration commit. This leaves the developer
+  with a fully-wired repo ready for the AI onboarding wizard.
 
 acceptance_criteria:
-  - "Given a valid repo name, when `gh openspec create <name>` runs, then a new GitHub repo is created under the authenticated user's account."
-  - "Given repo creation succeeds with --clone (default), then all files from template/ are present in the local clone."
-  - "Given template files are copied, then all {{PROJECT_NAME}}, {{GITHUB_OWNER}}, and {{DATE}} tokens are substituted with actual values."
-  - "Given substitution is complete, then a commit with message 'chore: bootstrap OpenSpec enforcement' is pushed to origin main."
+  - "Given a valid repo name, when `gh openspec create <name>` runs, then a new GitHub repo is created under the authenticated user's account using the arananet/openspec-template template."
+  - "Given repo creation succeeds with --clone (default), then all template files are present in the local clone."
+  - "Given template files are cloned, then all {{PROJECT_NAME}}, {{GITHUB_OWNER}}, and {{DATE}} tokens are substituted with actual values."
+  - "Given substitution produces changes, then a configuration commit is pushed to the remote default branch."
   - "Given the command completes, then next-step instructions are printed including the Claude Code onboarding prompt."
   - "Given an invalid repo name (special chars), then the command exits with error before creating anything."
   - "Given --public flag is passed, then the repo is created as public."
   - "Given --no-clone flag is passed, then the repo is created on GitHub only with no local clone."
 
 out_of_scope:
-  - "GitHub Template Repository API (we copy manually for full control)"
   - "Organization repo creation (planned for v0.2)"
 
 technical_notes: |
-  Template copy uses `cp -r template/. <dest>/` to preserve dotfiles.
-  Substitution walks all text files in the new repo directory.
+  Uses `gh repo create --template arananet/openspec-template` so the initial commit
+  with all template files is created by GitHub. A second commit applies
+  project-specific token substitutions. Push uses `git push -u origin HEAD` to
+  support any default branch name.
 
 linked_issues: []
 linked_prs: []

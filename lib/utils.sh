@@ -75,9 +75,9 @@ template_substitute() {
   local file="$1"
   local key="$2"
   local value="$3"
-  # Escape special chars in value for sed
+  # Escape only chars special in a sed replacement string: \, &, and the | delimiter
   local escaped_value
-  escaped_value=$(printf '%s\n' "$value" | sed 's/[[\.*^$()+?{|]/\\&/g; s/]/\\]/g')
+  escaped_value=$(printf '%s\n' "$value" | sed -e 's/\\/\\\\/g' -e 's/&/\\&/g' -e 's/|/\\|/g')
   local tmp
   tmp=$(mktemp)
   sed "s|{{${key}}}|${escaped_value}|g" "$file" > "$tmp" && mv "$tmp" "$file"
