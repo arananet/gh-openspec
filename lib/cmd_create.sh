@@ -55,8 +55,8 @@ cmd_create() {
 
   step "Creating repository $full_name..."
 
-  # Build gh repo create command
-  local create_args=("$full_name" "$visibility")
+  # Build gh repo create command — use the openspec-template repo for reliable bootstrap
+  local create_args=("$full_name" "$visibility" "--template" "arananet/openspec-template")
   [ -n "$description" ] && create_args+=(--description "$description")
   if $do_clone; then
     create_args+=(--clone)
@@ -73,33 +73,18 @@ cmd_create() {
       exit 1
     fi
 
-    step "Copying OpenSpec template..."
-    local template_dir="$SCRIPT_DIR/template"
-    if [ ! -d "$template_dir" ]; then
-      error "Template directory not found at $template_dir"
-      info  "Your gh-openspec installation may be corrupted. Try reinstalling."
-      exit 1
-    fi
-
-    # Copy all template files (including dotfiles) into the cloned repo
-    cp -r "$template_dir/." "$repo_name/"
-
     step "Applying project substitutions..."
     substitute_dir "$repo_name" "$repo_name" "$owner" "$date_str"
 
-    step "Committing OpenSpec bootstrap..."
+    step "Committing OpenSpec configuration..."
     (
       cd "$repo_name"
       git add -A
-      git commit -m "chore: bootstrap OpenSpec enforcement
+      git diff --cached --quiet || git commit -m "chore: apply project-specific OpenSpec configuration
 
-- Add .openspec/config.yaml with project configuration template
-- Add .openspec/templates/ with feature and bugfix spec templates
-- Add .github/workflows/ for PR spec gate and bootstrap notification
-- Add hooks/ and setup.sh for local git hook installation
-- Add CLAUDE.md for AI-guided onboarding wizard
-- Add .github/AGENTS.md and copilot-instructions.md for AI agents"
-      git push origin main
+- Substitute {{PROJECT_NAME}}, {{GITHUB_OWNER}}, and {{DATE}} tokens
+- Repository: $full_name"
+      git push -u origin HEAD
     )
 
     echo ""
@@ -118,7 +103,7 @@ cmd_create() {
     echo "   gh openspec scaffold 'my first feature'"
   else
     echo ""
-    success "Repository $full_name created (no local clone)."
-    info "Clone it and run: gh openspec init"
+    success "Repository $full_name created from OpenSpec template."
+    info "Clone it, then open in Claude Code — CLAUDE.md will guide you through config."
   fi
 }
