@@ -49,7 +49,7 @@ hooks/ + setup.sh   ← git hooks (installed via devcontainer or bash setup.sh)
 ### Option B — CLI
 
 ```bash
-gh extension install arananet/openspec_github_extension
+gh extension install arananet/gh-openspec
 gh openspec create my-project
 cd my-project && bash setup.sh
 ```

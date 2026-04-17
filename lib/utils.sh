@@ -165,6 +165,6 @@ COMMON FLAGS
     --pr <number>         Check files changed in a specific PR
 
 LEARN MORE
-  https://github.com/arananet/openspec_github_extension
+  https://github.com/arananet/gh-openspec
 EOF
 }
