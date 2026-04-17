@@ -70,7 +70,7 @@ get_git_repo_owner() {
 
 # ── Template substitution ─────────────────────────────────────────────────────
 
-# Replace {{KEY}} with value in a file, in-place
+# Replace {{KEY}} with value in a file, in-place (macOS + Linux compatible)
 template_substitute() {
   local file="$1"
   local key="$2"
@@ -78,7 +78,9 @@ template_substitute() {
   # Escape special chars in value for sed
   local escaped_value
   escaped_value=$(printf '%s\n' "$value" | sed 's/[[\.*^$()+?{|]/\\&/g; s/]/\\]/g')
-  sed -i "s|{{${key}}}|${escaped_value}|g" "$file"
+  local tmp
+  tmp=$(mktemp)
+  sed "s|{{${key}}}|${escaped_value}|g" "$file" > "$tmp" && mv "$tmp" "$file"
 }
 
 # Apply all standard substitutions to a file
