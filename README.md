@@ -49,8 +49,8 @@ hooks/ + setup.sh   ← git hooks (installed via devcontainer or bash setup.sh)
 ### Option B — CLI
 
 ```bash
-gh extension install arananet/gh-openspec_github_extension
-gh openspec_github_extension create my-project
+gh extension install arananet/gh-openspec
+gh openspec create my-project
 cd my-project && bash setup.sh
 ```
 
@@ -60,7 +60,7 @@ cd my-project && bash setup.sh
 
 ```bash
 # Create a new repo with OpenSpec baked in
-gh openspec_github_extension create my-project
+gh openspec create my-project
 
 # Change into the repo and install git hooks
 cd my-project
@@ -78,54 +78,54 @@ and walks you through setup questions before letting you write any code.
 
 ## Commands
 
-### `gh openspec_github_extension create <repo-name>`
+### `gh openspec create <repo-name>`
 
 Creates a new GitHub repo and stamps it with the full OpenSpec template.
 
 ```bash
-gh openspec_github_extension create my-api
-gh openspec_github_extension create my-api --public
-gh openspec_github_extension create my-api --description "Payments service"
-gh openspec_github_extension create my-api --no-clone
+gh openspec create my-api
+gh openspec create my-api --public
+gh openspec create my-api --description "Payments service"
+gh openspec create my-api --no-clone
 ```
 
 After creation: `cd my-api && bash setup.sh`, then open in Claude Code.
 
 ---
 
-### `gh openspec_github_extension init`
+### `gh openspec init`
 
 Adds OpenSpec to an **existing** repo (run from inside it).
 
 ```bash
-gh openspec_github_extension init
-gh openspec_github_extension init --force
-gh openspec_github_extension init --skip-hooks
+gh openspec init
+gh openspec init --force
+gh openspec init --skip-hooks
 ```
 
 ---
 
-### `gh openspec_github_extension scaffold <feature-name>`
+### `gh openspec scaffold <feature-name>`
 
 Creates a new spec file at `.openspec/specs/<slug>.spec.yaml`.
 
 ```bash
-gh openspec_github_extension scaffold "user authentication"
-gh openspec_github_extension scaffold "fix login crash" --type bugfix
-gh openspec_github_extension scaffold "user auth" --author alice --status review
+gh openspec scaffold "user authentication"
+gh openspec scaffold "fix login crash" --type bugfix
+gh openspec scaffold "user auth" --author alice --status review
 ```
 
 ---
 
-### `gh openspec_github_extension check`
+### `gh openspec check`
 
 Validates spec coverage and quality. Used locally and in CI.
 
 ```bash
-gh openspec_github_extension check
-gh openspec_github_extension check --strict
-gh openspec_github_extension check --pr 42
-gh openspec_github_extension check --commit abc123
+gh openspec check
+gh openspec check --strict
+gh openspec check --pr 42
+gh openspec check --commit abc123
 ```
 
 Exit code `0` = pass, `1` = failure.
@@ -135,7 +135,7 @@ Exit code `0` = pass, `1` = failure.
 ## How It Works
 
 ```
-gh openspec_github_extension create my-repo
+gh openspec create my-repo
         │
         ├── Creates GitHub repo
         ├── Copies template/ into the clone
@@ -149,7 +149,7 @@ Open in Claude Code
         ├── Reads .openspec/onboarding.yaml (question schema)
         ├── Asks setup questions (team, domain, description, etc.)
         ├── Writes answers into .openspec/config.yaml
-        └── Optionally: gh openspec_github_extension scaffold "<first feature>"
+        └── Optionally: gh openspec scaffold "<first feature>"
 
 Every commit
         │
@@ -275,7 +275,7 @@ This repo uses OpenSpec on itself. Every subcommand has a spec in
 ## Contributing
 
 1. Check `.openspec/specs/` for the relevant spec
-2. `gh openspec_github_extension scaffold "<feature>"` if no spec exists
+2. `gh openspec scaffold "<feature>"` if no spec exists
 3. Fill in `acceptance_criteria` before writing code
 4. Include the spec in your PR
 

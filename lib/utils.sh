@@ -36,7 +36,7 @@ require_git_repo() {
 require_openspec() {
   if [ ! -f ".openspec/config.yaml" ]; then
     error "OpenSpec not initialized in this directory."
-    info  "Run: gh openspec_github_extension init"
+    info  "Run: gh openspec init"
     exit 1
   fi
 }
@@ -126,10 +126,10 @@ config_has_placeholders() {
 
 print_help() {
   cat <<'EOF'
-gh openspec_github_extension — spec-driven development enforcement from day 0
+gh openspec — spec-driven development enforcement from day 0
 
 USAGE
-  gh openspec_github_extension <subcommand> [flags]
+  gh openspec <subcommand> [flags]
 
 SUBCOMMANDS
   create <repo-name>        Create a new GitHub repo with OpenSpec baked in
@@ -140,7 +140,7 @@ SUBCOMMANDS
   help                      Show this help
 
 QUICK START
-  gh openspec_github_extension create my-project
+  gh openspec create my-project
   cd my-project && bash setup.sh
   # Open in Claude Code — it will guide you through config
 
@@ -164,6 +164,6 @@ COMMON FLAGS
     --pr <number>         Check files changed in a specific PR
 
 LEARN MORE
-  https://github.com/arananet/gh-openspec_github_extension
+  https://github.com/arananet/gh-openspec
 EOF
 }
