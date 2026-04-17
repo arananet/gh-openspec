@@ -290,3 +290,9 @@ MIT © Arananet
 Built by **Eduardo Arana** — this project is developed using OpenSpec,
 meaning every feature in this extension was written spec-first: acceptance
 criteria defined before a single line of implementation code.
+
+---
+
+## Support the Project
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H51MPWG)
