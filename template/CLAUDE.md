@@ -79,6 +79,43 @@ When the user asks you to implement something new:
 
 ---
 
+## Coding Standards
+
+These rules apply during implementation (once a spec is approved).
+
+### 1. Think Before Coding
+
+State assumptions explicitly before writing anything. If multiple interpretations exist, present them — don't pick silently. If something is unclear, stop and ask rather than guess.
+
+### 2. Simplicity First
+
+Write the minimum code that satisfies the spec's `acceptance_criteria`. Nothing speculative.
+
+- No features beyond what the spec defines
+- No abstractions for single-use code
+- No "flexibility" that wasn't in the spec
+- No error handling for impossible scenarios
+
+If you write 200 lines and it could be 50, rewrite it.
+
+### 3. Surgical Changes
+
+Touch only what the spec requires. When editing existing code:
+
+- Don't improve adjacent code, comments, or formatting
+- Don't refactor things that aren't in scope
+- Match existing style, even if you'd do it differently
+- If you notice unrelated dead code, mention it — don't delete it
+- Remove imports/variables/functions that **your** changes made unused; leave pre-existing dead code alone
+
+Every changed line should trace directly to an `acceptance_criteria` item.
+
+### 4. Goal-Driven Execution
+
+The spec's `acceptance_criteria` are your success criteria — not "make it work". Before coding, map each criterion to a verifiable check (test, command, or observable behavior). Don't mark work done until each criterion is verifiably met.
+
+---
+
 ## Validating Spec Coverage
 
 ```bash

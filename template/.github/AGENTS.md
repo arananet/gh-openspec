@@ -35,6 +35,20 @@ gh openspec check --pr <number>
 If `.openspec/config.yaml` contains `{{` placeholder tokens, the project has
 not been configured yet. Read `CLAUDE.md` for the guided setup flow.
 
+## Coding Standards
+
+Apply these during implementation (once a spec is approved).
+
+**Think before coding** — state assumptions explicitly. If something is unclear, ask. Don't pick between interpretations silently.
+
+**Simplicity first** — write the minimum code that satisfies `acceptance_criteria`. No features, abstractions, or error handling beyond what the spec defines.
+
+**Surgical changes** — touch only what the spec requires. Don't refactor adjacent code, match existing style, and remove only the dead code your own changes created.
+
+**Goal-driven execution** — treat each `acceptance_criteria` item as a verifiable success criterion. Don't mark work done until every criterion is met.
+
+---
+
 ## Config
 
 `.openspec/config.yaml` — controls enforcement levels, required spec fields,
