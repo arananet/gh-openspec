@@ -19,8 +19,21 @@ acceptance_criteria:
   - "<!-- Given <context>, when <action>, then <outcome> -->"
   - "<!-- Add as many as needed. These drive QA and code review. -->"
 
+test_plan:
+  - "<!-- Unit test: <what function/module is tested and what it asserts> -->"
+  - "<!-- Integration test (if applicable): <what flow is tested end-to-end> -->"
+
+qa_notes: |
+  <!-- Manual QA steps, edge cases to verify, or environments to test in.
+       Leave blank if fully covered by automated tests. -->
+
 out_of_scope:
   - "<!-- Explicitly list things NOT included so reviewers don't assume. -->"
+
+implementation_skill: null
+  # Optional: name of the domain skill to invoke when implementing this spec.
+  # Overrides agents.implementation_skills.default in config.yaml.
+  # Examples: "frontend-pro", "backend-pro", "data-eng-pro", "devops-pro", "mobile-pro"
 
 technical_notes: |
   <!-- Optional: constraints, dependencies, architecture decisions.

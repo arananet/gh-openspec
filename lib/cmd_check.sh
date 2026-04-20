@@ -54,7 +54,13 @@ cmd_check() {
     warn_count=$((warn_count + 1))
   else
     info "Validating ${#spec_files[@]} spec file(s)..."
-    local required_fields=("title" "description" "acceptance_criteria" "status")
+    local required_fields=()
+    while IFS= read -r f; do
+      [ -n "$f" ] && required_fields+=("$f")
+    done < <(yaml_get_list "$config" "spec.required_fields")
+    if [ ${#required_fields[@]} -eq 0 ]; then
+      required_fields=("title" "description" "acceptance_criteria" "status")
+    fi
 
     for spec in "${spec_files[@]}"; do
       local spec_fail=0

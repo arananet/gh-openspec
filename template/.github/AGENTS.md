@@ -3,9 +3,37 @@
 This project uses **OpenSpec** for spec-driven development.
 Every feature must have a spec file before code is written.
 
-## Core Rule
+## Core Rules
 
-No production code without a spec. Check `.openspec/specs/` before implementing anything.
+1. No production code without a spec. Check `.openspec/specs/` before implementing anything.
+2. Every spec must have a `test_plan` section before status moves to `review`.
+3. Write tests alongside the implementation — not as a follow-up.
+4. Do not merge a spec in `draft` status with production code.
+
+## Coding Guidelines (Karpathy)
+
+These apply on every implementation task, alongside the OpenSpec process.
+
+**Think Before Coding**
+- State assumptions explicitly before writing code. If uncertain, ask — don't guess.
+- If multiple interpretations of a spec exist, present them. Don't pick silently.
+- If something is unclear, stop and name what's confusing.
+
+**Simplicity First**
+- Write the minimum code that satisfies each `acceptance_criteria` item. Nothing more.
+- No unrequested abstractions, configurability, or error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+**Surgical Changes**
+- Touch only what the spec requires. Don't improve adjacent code that isn't broken.
+- Match existing style. Remove only orphans your own changes created.
+- Every changed line must trace to an acceptance criterion in the spec.
+
+**Goal-Driven Execution** *(OpenSpec handles this)*
+- `acceptance_criteria` = success criteria. `test_plan` = verification steps.
+- Both must be present and met before a PR is opened.
+
+---
 
 ## Quick Commands
 
@@ -35,21 +63,18 @@ gh openspec check --pr <number>
 If `.openspec/config.yaml` contains `{{` placeholder tokens, the project has
 not been configured yet. Read `CLAUDE.md` for the guided setup flow.
 
-## Coding Standards
+## CI Layers
 
-Apply these during implementation (once a spec is approved).
+Two complementary CI workflows run on every PR:
 
-**Think before coding** — state assumptions explicitly. If something is unclear, ask. Don't pick between interpretations silently.
+| Workflow | Type | What it checks |
+|---|---|---|
+| `spec-check.yml` | Deterministic | Field presence, valid status, spec exists for source changes |
+| `spec-ai-review.yml` | Agentic (AI) | Semantic alignment — does the code satisfy the acceptance criteria and test_plan? |
 
-**Simplicity first** — write the minimum code that satisfies `acceptance_criteria`. No features, abstractions, or error handling beyond what the spec defines.
-
-**Surgical changes** — touch only what the spec requires. Don't refactor adjacent code, match existing style, and remove only the dead code your own changes created.
-
-**Goal-driven execution** — treat each `acceptance_criteria` item as a verifiable success criterion. Don't mark work done until every criterion is met.
-
----
+The AI review posts a comment on the PR. It is advisory — the deterministic check is the gate.
 
 ## Config
 
 `.openspec/config.yaml` — controls enforcement levels, required spec fields,
-CI behavior, and git hook settings.
+CI behavior, git hook settings, and agentic review options.

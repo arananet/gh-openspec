@@ -39,7 +39,14 @@ cmd_init() {
   date_str=$(date +%Y-%m-%d)
 
   step "Copying OpenSpec template into current repository..."
-  cp -r "$template_dir/." "./"
+  # Don't clobber existing root-level files (README, LICENSE, etc.) in an
+  # existing repo unless --force was passed. Directory contents are still
+  # merged so new workflows / hooks / specs always land.
+  local cp_flag="-n"
+  $force && cp_flag="-f"
+  find "$template_dir" -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' entry; do
+    cp -r $cp_flag "$entry" "./"
+  done
 
   step "Applying project substitutions..."
   substitute_dir "." "$repo_name" "$owner" "$date_str"
@@ -54,10 +61,18 @@ cmd_init() {
   echo ""
   info "Files added:"
   echo "   .openspec/config.yaml       ← configure your project settings"
-  echo "   .openspec/templates/        ← spec templates"
-  echo "   .github/workflows/          ← PR gate and bootstrap CI"
+  echo "   .openspec/defaults.yaml     ← pre-filled DevOps defaults"
+  echo "   .openspec/templates/        ← feature & bugfix spec templates"
+  echo "   .openspec/specs/            ← example spec + your future specs"
+  echo "   .claude/                    ← Claude Code slash commands & hooks"
+  echo "   .github/workflows/          ← spec-check, AI review, CodeQL, secret-scan, SBOM, labeler, stale, release-drafter"
+  echo "   .github/ISSUE_TEMPLATE/     ← bug / feature / spec question forms"
+  echo "   .github/CODEOWNERS, dependabot.yml, pull_request_template.md"
   echo "   hooks/                      ← git hooks (installed into .git/hooks/)"
-  echo "   CLAUDE.md                   ← AI agent instructions + onboarding wizard"
+  echo "   CLAUDE.md, README.md, CONTRIBUTING.md, CHANGELOG.md"
+  echo "   CODE_OF_CONDUCT.md, SECURITY.md, SUPPORT.md, LICENSE"
+  echo "   .editorconfig, .gitattributes, .gitignore, .yamllint, .pre-commit-config.yaml"
+  echo "   docs/BRANCH_PROTECTION.md"
   echo ""
   info "Next steps:"
   echo "   1. Open this project in Claude Code — it will guide you through config"

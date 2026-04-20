@@ -118,6 +118,27 @@ yaml_get() {
   grep -E "^${key}:" "$file" 2>/dev/null | head -1 | sed "s/^${key}:[[:space:]]*//" | tr -d '"'
 }
 
+# Read a list under a dotted top-level key (e.g. "spec.required_fields")
+# Prints one item per line. Supports 1-level nesting only (sufficient for config).
+yaml_get_list() {
+  local file="$1"
+  local path="$2"
+  local parent="${path%%.*}"
+  local child="${path#*.}"
+  awk -v parent="$parent" -v child="$child" '
+    $0 ~ "^"parent":"          { in_parent=1; next }
+    in_parent && /^[^[:space:]]/ { in_parent=0; in_child=0 }
+    in_parent && $0 ~ "^[[:space:]]+"child":" { in_child=1; next }
+    in_child && /^[[:space:]]+-/ {
+      sub(/^[[:space:]]+-[[:space:]]*/, "")
+      gsub(/"/, "")
+      print
+      next
+    }
+    in_child && /^[[:space:]]+[^[:space:]-]/ { in_child=0 }
+  ' "$file" 2>/dev/null
+}
+
 # Check if config.yaml still has unsubstituted placeholder tokens
 config_has_placeholders() {
   local config="${1:-.openspec/config.yaml}"

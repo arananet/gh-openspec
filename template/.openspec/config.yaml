@@ -23,6 +23,7 @@ spec:
     - title
     - description
     - acceptance_criteria
+    - test_plan
     - status
   enforce_on_pr: true
   enforce_on_commit: true
@@ -33,11 +34,35 @@ spec:
     - approved
   approved_required_for_merge: false
 
+testing:
+  require_tests: true
+  test_command: "{{TEST_COMMAND}}"
+  coverage_threshold: null
+  fail_on_missing_tests: true
+
 ci:
   fail_on_missing_spec: true
   fail_on_draft_spec: false
+  run_tests: true
+  fail_on_test_failure: true
+  fail_on_missing_tests: true
   notify_slack: false
   slack_webhook: ""
+
+agents:
+  spec_review:
+    enabled: true
+    model: "openai/gpt-4o-mini"
+    trigger: "pull_request"
+    post_as: "pr-comment"
+    goal_file: ".github/agents/spec-review.md"
+  implementation_skills:
+    frontend: "frontend-pro"
+    backend: "backend-pro"
+    data: "data-eng-pro"
+    devops: "devops-pro"
+    mobile: "mobile-pro"
+    default: null   # null = no domain skill, Claude handles implementation directly
 
 hooks:
   pre_commit:

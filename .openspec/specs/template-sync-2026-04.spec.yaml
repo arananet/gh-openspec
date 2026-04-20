@@ -1,0 +1,59 @@
+# Feature Spec — template-sync-2026-04
+# Status must reach 'review' before any production code is written.
+
+title: "Sync bundled template with upstream openspec-template enterprise-hardening release"
+slug: "template-sync-2026-04"
+type: feature
+status: review
+
+author: "arananet"
+created_at: "2026-04-20"
+updated_at: "2026-04-20"
+
+description: |
+  The upstream arananet/openspec-template repo shipped a major update that
+  adds enterprise governance, security, and CI/CD scaffolding (CODEOWNERS,
+  dependabot, CodeQL, secret scanning, SBOM, release-drafter, stale bot,
+  issue/PR templates, CONTRIBUTING, SECURITY, SUPPORT, CHANGELOG, LICENSE,
+  .claude/ slash commands, .editorconfig, .gitattributes, .gitignore,
+  yamllint, pre-commit framework, docs/BRANCH_PROTECTION.md) plus a new
+  `test_plan` required spec field and `testing:` / `agents:` config blocks.
+
+  The `gh openspec` extension bundles this template under `template/` and
+  stamps it into new repos via `gh openspec create` and `gh openspec init`.
+  To keep the CLI extension at parity with the source of truth, we sync the
+  bundled template and adjust the subcommands to handle the expanded layout
+  without regressing existing behavior.
+
+acceptance_criteria:
+  - "Given the upstream template adds new files (.claude/, docs/, root-level .editorconfig/.gitattributes/.gitignore/.yamllint/.pre-commit-config.yaml/CHANGELOG.md/CODE_OF_CONDUCT.md/CONTRIBUTING.md/LICENSE/README.md/SECURITY.md/SUPPORT.md), then every new file is present under `template/` in this repo."
+  - "Given the upstream template updates .openspec/config.yaml with `testing:` and `agents:` blocks and a new `test_plan` required field, then `template/.openspec/config.yaml` mirrors upstream exactly."
+  - "Given upstream ships `.openspec/defaults.yaml`, then the bundled template includes it."
+  - "Given upstream ships enterprise GitHub workflows (codeql, dependency-review, labeler, release-drafter, sbom, secret-scan, spec-ai-review, stale), then all are present under `template/.github/workflows/`."
+  - "Given upstream includes governance-only specs (`enterprise-hardening.spec.yaml`, `template-completeness.spec.yaml`) that describe the template repo itself, then those two files are excluded from the bundled template so new user repos only ship the example spec."
+  - "Given a user runs `gh openspec init` on an existing repo, then existing root-level files (README.md, LICENSE, etc.) are NOT clobbered unless `--force` is passed."
+  - "Given `gh openspec check` reads spec.required_fields from the user's config.yaml, then the list (including the new `test_plan` field) drives validation instead of a hardcoded list."
+  - "Given a user runs `gh openspec scaffold`, then the printed hint text mentions `test_plan` and `implementation_skill` so users know to fill them in."
+
+test_plan:
+  - "Diff `template/` against a fresh clone of arananet/openspec-template@main — the only expected difference is the absence of enterprise-hardening.spec.yaml and template-completeness.spec.yaml under .openspec/specs/."
+  - "Run `gh extension install .` then `gh openspec init` inside a scratch repo containing its own README.md — verify README.md is untouched and all missing template files are added."
+  - "Run `gh openspec check` inside a repo whose spec files include `test_plan` — verify the check passes; remove test_plan from one spec and verify the check fails with a clear error."
+  - "Run `gh openspec scaffold 'demo feature'` — verify the generated spec file contains the `test_plan:` block and the post-create hint mentions test_plan."
+
+out_of_scope:
+  - "Rewriting the onboarding wizard to automatically fill in the new placeholders (PROJECT_DESCRIPTION, PROJECT_DOMAIN, TEAM_NAME, TEST_COMMAND, SECURITY_CONTACT) — CLAUDE.md still drives that interactively."
+  - "Enforcing the new `testing:` / `agents:` config sections inside `gh openspec check` (keep the check minimal for this sync)."
+
+implementation_skill: null
+
+technical_notes: |
+  - The bundled template lives at `template/` at the repo root.
+  - `cmd_init.sh` now copies each top-level entry with `cp -r -n` so existing
+    files in the target repo are preserved; `--force` switches to `-f`.
+  - `cmd_check.sh` reads `spec.required_fields` from config via the new
+    `yaml_get_list` helper in `utils.sh`, falling back to the original
+    four-field default if the config doesn't declare the list.
+
+linked_issues: []
+linked_prs: []

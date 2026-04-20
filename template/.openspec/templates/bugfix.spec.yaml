@@ -25,9 +25,17 @@ acceptance_criteria:
   - "<!-- The bug is fixed when: ... -->"
   - "<!-- Edge case: ... -->"
 
+test_plan:
+  - "<!-- Regression test: <what test was added to prevent recurrence> -->"
+  - "<!-- Unit test (if applicable): <any new unit coverage added> -->"
+
+implementation_skill: null
+  # Optional: domain skill to invoke during implementation.
+  # Examples: "frontend-pro", "backend-pro", "devops-pro"
+
 regression_test: |
-  <!-- Describe a test case that would catch this bug in the future.
-       Ideally reference the test file/function that was added. -->
+  <!-- Reference the specific test file/function added to cover this bug.
+       Format: path/to/test_file.ext — test_function_name -->
 
 linked_issues: []
   # - "https://github.com/{{GITHUB_OWNER}}/{{PROJECT_NAME}}/issues/1"
